@@ -5,6 +5,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
 
 /**
  * @author majm
@@ -12,23 +14,29 @@ import javax.servlet.http.HttpServletResponse;
  * @desc
  **/
 public class LoginInterceptor implements HandlerInterceptor {
-   static Boolean isLogin = false;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String userName = request.getParameter("userName");
-        String passWord = request.getParameter("passWord");
-        if (isLogin){
-            return true;
+        HttpSession session = request.getSession();
+        System.out.println("==========>>>>sessionId:" + session.getId());
+        System.out.println("======SESSION::::" + session);
+        Enumeration<String> attrs = session.getAttributeNames();
+// 遍历attrs中的
+        while (attrs.hasMoreElements()) {
+// 获取session键值
+            String name = attrs.nextElement().toString();
+            // 根据键值取session中的值
+            Object vakue = session.getAttribute(name);
+            // 打印结果
+            System.out.println("------" + name + ":" + vakue + "--------\n");
+
         }
-        if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(passWord)) {
+        if (StringUtils.isEmpty(session.getAttribute("userName"))) {
             response.sendRedirect("/toLogin");
             return false;
         }
 
-        if (userName.equals("admin") && passWord.equals("admin")) {
-            isLogin = true;
+        if (session.getAttribute("userName") != null) {
             return true;
-
         }
         response.sendRedirect("/toLogin");
         return false;

@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,13 +22,26 @@ public class LoginController {
     private ResumeDao resumeDao;
 
     @RequestMapping("/resume")
-    public String resume(String userName, String passWord, Model model) {
+    public String resume(Model model, String username, String password, HttpSession session) {
         model.addAttribute("list", resumeDao.findAll());
         return "jsp/resume";
     }
 
     @RequestMapping("/toLogin")
-    public String login(String userName, String passWord) {
+    public String login() {
         return "jsp/login";
     }
+    @RequestMapping("/dealLogin")
+    public String dealLogin(Model model, String userName, String passWord, HttpSession session){
+        if("admin".equals(userName) && "admin".equals(passWord)) {
+            System.out.println("合法用户");
+            session.setAttribute("userName",userName + System.currentTimeMillis());
+            return "redirect:/resume";
+        }else{
+            // 非法用户返回登录页面
+            System.out.println("非法，跳转");
+            return "jsp/login";
+        }
+    }
+
 }

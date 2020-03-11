@@ -84,7 +84,8 @@
     <title>简历列表</title>
 </head>
 <body>
-
+<h2>我是服务器：${pageContext.request.localPort}</h2>
+<h2>当前sessionId：${pageContext.session.id}</h2>
     <table>
         <tr>
             <td>id</td>
